@@ -1,0 +1,81 @@
+icons_format = "{icon}"
+
+[theme]
+theme = "plain"
+[theme.overrides]
+idle_bg = "#000000"
+idle_fg = "#fbf1c7"
+good_bg = "#000000"
+good_fg = "#8ec07c"
+warning_bg = "#000000"
+critical_bg = "#000000"
+separator_bg = "#000000"
+separator_fg = "#000000"
+
+[icons]
+icons = "awesome4"
+
+[[block]]
+block = "focused_window"
+[block.format]
+full = " $title.str(max_w:15) |"
+
+[[block]]
+block = "bluetooth"
+mac = "AC:80:0A:26:E1:78"
+disconnected_format = ""
+format = " $name "
+[block.battery_state]
+"0..20" = "critical"
+"21..70" = "warning"
+"71..100" = "good"
+[[block.click]]
+button = "left"
+cmd = "blueman-manager"
+
+[[block]]
+block = "cpu"
+interval = 3
+format = " $icon $utilization "
+
+[[block]]
+block = "net"
+format = "$icon {$signal_strength}"
+[[block.click]]
+button = "left"
+cmd = "nm-connection-editor"
+
+[[block]]
+block = "vpn"
+driver = "mullvad"
+interval = 20
+format_connected = " $icon "
+format_disconnected = " $icon "
+state_connected = "good"
+state_disconnected = "warning"
+
+[[block]]
+block = "hueshift"
+hue_shifter = "gammastep"
+step = 100
+click_temp = 2000
+
+[[block]]
+block = "backlight"
+
+[[block]]
+block = "sound"
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
+[[block.click]]
+button = "right"
+cmd = "blueman-manager"
+
+[[block]]
+block = "battery"
+format = " $icon  $percentage "
+
+[[block]]
+block = "time"
+interval = 60
