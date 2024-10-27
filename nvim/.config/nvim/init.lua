@@ -81,10 +81,15 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	spec = {
-		"ellisonleao/gruvbox.nvim",
 		{
-			"nvim-telescope/telescope.nvim",
-			dependencies = { "nvim-lua/plenary.nvim" },
+			"ellisonleao/gruvbox.nvim",
+			lazy = false,
+			priority = 1000,
+		},
+
+		{
+			"ibhagwan/fzf-lua",
+			dependencies = { "nvim-tree/nvim-web-devicons" },
 		},
 
 		{
@@ -106,45 +111,62 @@ require("lazy").setup({
 			event = { "BufReadPre", "BufNewFile" },
 		},
 
-		{ "norcalli/nvim-colorizer.lua" },
-
 		{
-			"hrsh7th/nvim-cmp",
-			event = "InsertEnter",
+			"neovim/nvim-lspconfig", -- REQUIRED: for native Neovim LSP integration
+			lazy = false, -- REQUIRED: tell lazy.nvim to start this plugin at startup
 			dependencies = {
-				"hrsh7th/cmp-buffer",
-				"hrsh7th/cmp-path",
-				{
-					"L3MON4D3/LuaSnip",
-					version = "v2.*",
-					-- install jsregexp (optional!).
-					build = "make install_jsregexp",
-				},
-				"rafamadriz/friendly-snippets",
-				"onsails/lspkind.nvim",
+				-- main one
+				{ "ms-jpq/coq_nvim", branch = "coq" },
+
+				-- 9000+ Snippets
+				{ "ms-jpq/coq.artifacts", branch = "artifacts" },
+
+				-- lua & third party sources -- See https://github.com/ms-jpq/coq.thirdparty
+				-- Need to **configure separately**
+				{ "ms-jpq/coq.thirdparty", branch = "3p" },
+				-- - shell repl
+				-- - nvim lua api
+				-- - scientific calculator
+				-- - comment banner
+				-- - etc
 			},
+			init = function()
+				vim.g.coq_settings = {
+					auto_start = true, -- if you want to start COQ at startup
+					-- Your COQ settings here
+				}
+			end,
+			config = function()
+				-- Your LSP settings here
+			end,
 		},
 		{
 			"williamboman/mason.nvim",
 			dependencies = {
 				"williamboman/mason-lspconfig.nvim",
-				"WhoIsSethDaniel/mason-tool-installer.nvim",
 			},
 		},
 
-		{
-			"neovim/nvim-lspconfig",
-			event = { "BufReadPre", "BufNewFile" },
-			dependencies = {
-				"hrsh7th/cmp-nvim-lsp",
-				{ "folke/neodev.nvim", opts = {} },
+		checker = { enabled = true },
+		performance = {
+			cache = {
+				enabled = true,
+			},
+			reset_packpath = true,
+			rtp = {
+				reset = true,
 			},
 		},
-		checker = { enabled = true },
 	},
 })
 require("gruvbox").setup({ transparent_mode = true })
 vim.cmd("colorscheme gruvbox")
+
+local fzf = require("fzf-lua")
+vim.keymap.set("n", "<leader>pf", fzf.files, {})
+vim.keymap.set("n", "<C-p>", fzf.git_files, {})
+vim.keymap.set("n", "<leader>ps", fzf.live_grep, {})
+vim.keymap.set("n", "<leader>vh", fzf.help_tags, {})
 
 require("nvim-treesitter.configs").setup({
 	auto_install = true,
@@ -161,14 +183,6 @@ require("nvim-treesitter.configs").setup({
 require("nvim-autopairs").setup({
 	disable_filetype = { "TelescopePrompt", "vim" },
 })
-
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
-vim.keymap.set("n", "<C-p>", builtin.git_files, {})
-vim.keymap.set("n", "<leader>ps", function()
-	builtin.grep_string({ search = vim.fn.input("Grep > ") })
-end)
-vim.keymap.set("n", "<leader>vh", builtin.help_tags, {})
 
 require("conform").setup({
 	formatters_by_ft = {
@@ -203,43 +217,6 @@ vim.keymap.set({ "n", "v" }, "<leader>f", function()
 	})
 end, { desc = "Format file or range (in visual mode)" })
 
-require("colorizer").setup({ "*" })
-
-local cmp = require("cmp")
-local lspkind = require("lspkind")
-local luasnip = require("luasnip")
-
-require("luasnip.loaders.from_vscode").lazy_load()
-
-cmp.setup({
-	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-d>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
-		["<C-e>"] = cmp.mapping.close(),
-		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
-			select = true,
-		}),
-	}),
-	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
-		{ name = "buffer" },
-		{ name = "path" },
-	}),
-})
-
-vim.cmd([[
-      set completeopt=menuone,noinsert,noselect
-      highlight! default link CmpItemKind CmpItemMenuDefault
-    ]])
-
 require("mason").setup()
 
 require("mason-lspconfig").setup({
@@ -252,17 +229,6 @@ require("mason-lspconfig").setup({
 		"ts_ls",
 		"pyright",
 		"tailwindcss",
-	},
-})
-
-require("mason-tool-installer").setup({
-	ensure_installed = {
-		"prettier",
-		"stylua", -- lua formatter
-		"isort", -- python formatter
-		"black", -- python formatter
-		"pylint",
-		"eslint_d",
 	},
 })
 
@@ -283,8 +249,6 @@ local on_attach = function(client, bufnr)
 		})
 	end
 end
-
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 mason_lspconfig.setup_handlers({
 	function(server)
