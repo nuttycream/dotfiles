@@ -136,9 +136,6 @@ require("lazy").setup({
 					-- Your COQ settings here
 				}
 			end,
-			config = function()
-				-- Your LSP settings here
-			end,
 		},
 		{
 			"williamboman/mason.nvim",
