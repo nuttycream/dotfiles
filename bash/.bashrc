@@ -26,3 +26,7 @@ unset rc
 . "$HOME/.cargo/env"
 
 eval "$(zoxide init bash)"
+
+# fuck off annoying ass beep
+xset b off
+xset b 0 0 0
