@@ -198,7 +198,8 @@ require("conform").setup({
 		c = { "clang-format" },
 		zig = { "zigfmt" },
 		sh = { "beautysh" },
-		sql = { "sleek" },
+		sql = { "sqlfmt" },
+		gdscript = { "gdformat" },
 	},
 	format_on_save = {
 		lsp_fallback = true,
