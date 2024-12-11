@@ -82,9 +82,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{
-			"ellisonleao/gruvbox.nvim",
-			lazy = false,
-			priority = 1000,
+			"nyoom-engineering/oxocarbon.nvim",
 		},
 
 		{
@@ -156,8 +154,11 @@ require("lazy").setup({
 		},
 	},
 })
-require("gruvbox").setup({ transparent_mode = true })
-vim.cmd("colorscheme gruvbox")
+
+vim.cmd("colorscheme oxocarbon")
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
 
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader>pf", fzf.files, {})
