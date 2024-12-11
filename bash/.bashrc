@@ -30,3 +30,7 @@ eval "$(zoxide init bash)"
 # fuck off annoying ass beep
 xset b off
 xset b 0 0 0
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
