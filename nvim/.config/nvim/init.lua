@@ -217,8 +217,10 @@ vim.keymap.set({ "n", "v" }, "<leader>f", function()
 end, { desc = "Format file or range (in visual mode)" })
 
 require("mason").setup()
+local nvim_lsp = require("lspconfig")
+local mason_lspconfig = require("mason-lspconfig")
 
-require("mason-lspconfig").setup({
+mason_lspconfig.setup({
 	automatic_installation = true,
 	ensure_installed = {
 		"cssls",
@@ -231,8 +233,13 @@ require("mason-lspconfig").setup({
 	},
 })
 
-local nvim_lsp = require("lspconfig")
-local mason_lspconfig = require("mason-lspconfig")
+mason_lspconfig.setup_handlers({
+	function(server)
+		nvim_lsp[server].setup({
+			capabilities = capabilities,
+		})
+	end,
+})
 
 local protocol = require("vim.lsp.protocol")
 
@@ -248,14 +255,6 @@ local on_attach = function(client, bufnr)
 		})
 	end
 end
-
-mason_lspconfig.setup_handlers({
-	function(server)
-		nvim_lsp[server].setup({
-			capabilities = capabilities,
-		})
-	end,
-})
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
