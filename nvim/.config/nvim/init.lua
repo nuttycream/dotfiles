@@ -157,12 +157,12 @@ require("lazy").setup({
 	},
 })
 
-vim.cmd("colorscheme cyberdream")
 require("cyberdream").setup({
 	transparent = true,
 	italic_comments = true,
 	hide_fillchars = true,
 })
+vim.cmd("colorscheme cyberdream")
 
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader>pf", fzf.files, {})
