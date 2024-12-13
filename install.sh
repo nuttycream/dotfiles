@@ -55,7 +55,10 @@ main() {
     systemctl disable NetworkManager-wait-online.service
     rm /etc/xdg/autostart/org.gnome.Software.desktop
 
-    dnf install -y gh nvim unzip gammastep fzf ripgrep zoxide
+    dnf install -y gh nvim unzip gammastep fzf ripgrep zoxide nodejs
+
+    curl -fsSL https://bun.sh/install | bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
     success "install completed successfully!"
 }
