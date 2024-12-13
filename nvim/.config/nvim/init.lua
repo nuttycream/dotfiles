@@ -82,7 +82,9 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
 		{
-			"nyoom-engineering/oxocarbon.nvim",
+			"scottmckendry/cyberdream.nvim",
+			lazy = false,
+			priority = 1000,
 		},
 
 		{
@@ -155,10 +157,12 @@ require("lazy").setup({
 	},
 })
 
-vim.cmd("colorscheme oxocarbon")
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+vim.cmd("colorscheme cyberdream")
+require("cyberdream").setup({
+	transparent = true,
+	italic_comments = true,
+	hide_fillchars = true,
+})
 
 local fzf = require("fzf-lua")
 vim.keymap.set("n", "<leader>pf", fzf.files, {})
