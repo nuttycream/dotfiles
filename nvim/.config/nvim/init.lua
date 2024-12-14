@@ -161,6 +161,8 @@ require("cyberdream").setup({
 	transparent = true,
 	italic_comments = true,
 	hide_fillchars = true,
+	borderless_telescope = true,
+	cache = true,
 })
 vim.cmd("colorscheme cyberdream")
 
@@ -205,6 +207,7 @@ require("conform").setup({
 		sh = { "beautysh" },
 		sql = { "sqlfmt" },
 		gdscript = { "gdformat" },
+		["*"] = { "injected" },
 	},
 	format_on_save = {
 		lsp_fallback = true,
