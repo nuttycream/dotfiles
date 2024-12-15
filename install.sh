@@ -35,14 +35,14 @@ main() {
     dnf update -y
 
     fwupdmgr refresh --force
-    fwupdmgr get-devices # Lists devices with available updates.
-    fwupdmgr get-updates # Fetches list of available updates.
+    fwupdmgr get-devices
+    fwupdmgr get-updates
     fwupdmgr update
 
-    dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing # Switch to full FFMPEG.
+    dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing
     dnf4 group upgrade multimedia
-    dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin # Installs gstreamer components. Required if you use Gnome Videos and other dependent applications.
-    dnf update @sound-and-video # Installs useful Sound and Video complement packages.
+    dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+    dnf update @sound-and-video
 
 
     dnf install ffmpeg-libs libva libva-utils
@@ -55,7 +55,8 @@ main() {
     systemctl disable NetworkManager-wait-online.service
     rm /etc/xdg/autostart/org.gnome.Software.desktop
 
-    dnf install -y gh nvim unzip gammastep fzf ripgrep zoxide nodejs
+    dnf install -y gh stow nvim unzip gammastep fzf ripgrep zoxide nodejs
+    dnf4 group install "development tools" "c development tools and libraries" "videolan client"
 
     curl -fsSL https://bun.sh/install | bash
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
