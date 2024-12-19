@@ -18,26 +18,32 @@ warning() {
     echo -e "${YELLOW}Warning: $1${NC}"
 }
 
+setup_dotfiles() {
+    if [ -f "./setup.sh" ]; then
+        chmod +x ./setup.sh
+        su - $SUDO_USER -c "cd $PWD && ./setup.sh"
+        success "Dotfiles setup completed"
+    else
+        warning "setup.sh not found in current directory"
+    fi
+}
+
 main() {
-
-    if [ "$EUID" -ne 0 ]
-    then echo "Please run as root"
-        exit
+    if [ "$EUID" -ne 0 ]; then
+        error "Please run as root"
     fi
 
-    if grep -q fedora /etc/*-release
-    then echo "fedora found"
-    else echo "not a fedora machine"
-        exit
+    if ! grep -q fedora /etc/*-release; then
+        error "Not a Fedora machine"
     fi
 
-    cd "$(dirname "$0")" || error
+    cd "$(dirname "$0")" || error "Failed to change directory"
 
-    dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+        https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
     dnf group update core -y
     dnf4 group update core -y
-
     dnf update -y
 
     fwupdmgr refresh --force
@@ -45,29 +51,27 @@ main() {
     fwupdmgr get-updates
     fwupdmgr update
 
-    dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing
-    dnf4 group upgrade multimedia
-    dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
-    dnf update @sound-and-video
-
-
-    dnf install ffmpeg-libs libva libva-utils
-
+    dnf swap 'ffmpeg-free' 'ffmpeg' --allowerasing -y
+    dnf4 group upgrade multimedia -y
+    dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin -y
+    dnf update @sound-and-video -y
+    dnf install -y ffmpeg-libs libva libva-utils
     dnf install -y openh264 gstreamer1-plugin-openh264 mozilla-openh264
-    dnf config-manager setopt fedora-cisco-openh264.enabled=1
+    dnf config-manager --setopt=fedora-cisco-openh264.enabled=1
 
     hostnamectl set-hostname feddy
-
     systemctl disable NetworkManager-wait-online.service
-    rm /etc/xdg/autostart/org.gnome.Software.desktop
+    rm -f /etc/xdg/autostart/org.gnome.Software.desktop
 
     dnf install -y gh stow nvim unzip gammastep fzf ripgrep zoxide nodejs
-    dnf4 group install "development tools" "c development tools and libraries" "videolan client"
+    dnf4 group install -y "Development Tools" "C Development Tools and Libraries" "VLC media player"
 
-    curl -fsSL https://bun.sh/install | bash
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    su - $SUDO_USER -c 'curl -fsSL https://bun.sh/install | bash'
+    su - $SUDO_USER -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
 
-    success "install completed successfully!"
+    setup_dotfiles
+
+    success "install and config completed successfully"
 }
 
 main
