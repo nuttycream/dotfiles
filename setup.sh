@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Colors for output
 GREEN='\033[0;32m'
 NC='\033[0m'
 
@@ -24,6 +23,8 @@ for dir in */; do
                 mkdir -p "$backup_path"
                 cp -a "$target" "$backup_path/"
                 echo -e "${GREEN}backed up: $target${NC}"
+                rm "$target"
+                echo -e "${GREEN}rmd original: $target${NC}"
             fi
         done < <(find "$pkg" -type f)
 
