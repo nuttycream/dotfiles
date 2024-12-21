@@ -207,6 +207,7 @@ require("conform").setup({
 		sh = { "beautysh" },
 		sql = { "sqlfmt" },
 		gdscript = { "gdformat" },
+		go = { "gofmt" },
 		["*"] = { "injected" },
 	},
 	format_on_save = {
