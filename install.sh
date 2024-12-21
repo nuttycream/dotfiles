@@ -63,7 +63,7 @@ main() {
     systemctl disable NetworkManager-wait-online.service
     rm -f /etc/xdg/autostart/org.gnome.Software.desktop
 
-    dnf install -y gh stow nvim unzip gammastep fzf ripgrep zoxide nodejs
+    dnf install -y gh stow nvim unzip gammastep fzf ripgrep zoxide nodejs golang
     dnf4 group install -y "Development Tools" "C Development Tools and Libraries" "VLC media player"
 
     su - $SUDO_USER -c 'curl -fsSL https://bun.sh/install | bash'
