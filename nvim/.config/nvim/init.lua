@@ -210,11 +210,6 @@ require("conform").setup({
 		go = { "gofmt" },
 		["*"] = { "injected" },
 	},
-	format_on_save = {
-		lsp_fallback = true,
-		async = false,
-		timeout_ms = 1000,
-	},
 })
 
 vim.keymap.set({ "n", "v" }, "<leader>f", function()
