@@ -70,6 +70,7 @@ main() {
     su - $SUDO_USER -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
 
     setup_dotfiles
+    fc-cache -v
 
     success "install and config completed successfully"
 }
