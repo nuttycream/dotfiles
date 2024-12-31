@@ -31,6 +31,7 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg
+output * adaptive_sync off
 output * bg #000000 solid_color
 output eDP-1 scale 1.3
 #
