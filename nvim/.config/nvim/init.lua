@@ -234,6 +234,8 @@ mason_lspconfig.setup({
 		"ts_ls",
 		"pyright",
 		"tailwindcss",
+		"gopls",
+		"templ",
 	},
 })
 
